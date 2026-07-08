@@ -7,6 +7,7 @@ import cn.ezios.baseapi.common.model.BatchIdsRequest;
 import cn.ezios.baseapi.common.model.PageResult;
 import cn.ezios.baseapi.common.model.StatusUpdateRequest;
 import cn.ezios.baseapi.framework.config.SystemProperties;
+import cn.ezios.baseapi.modules.auth.session.LoginUserContext;
 import cn.ezios.baseapi.modules.system.dept.entity.SysDept;
 import cn.ezios.baseapi.modules.system.dept.mapper.SysDeptMapper;
 import cn.ezios.baseapi.modules.system.role.entity.SysRole;
@@ -118,6 +119,7 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.deleteById(id);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
+        StpUtil.logout(id);
     }
 
     @Override
@@ -136,6 +138,9 @@ public class UserServiceImpl implements UserService {
         user.setId(id);
         user.setStatus(request.getStatus());
         userMapper.updateById(user);
+        if (!Objects.equals(request.getStatus(), STATUS_ENABLED)) {
+            StpUtil.logout(id);
+        }
     }
 
     @Override
@@ -163,6 +168,7 @@ public class UserServiceImpl implements UserService {
         user.setId(id);
         user.setPassword(passwordEncoder.encode(password));
         userMapper.updateById(user);
+        StpUtil.logout(id);
         return new ResetPasswordVO(password);
     }
 
@@ -177,6 +183,7 @@ public class UserServiceImpl implements UserService {
         update.setId(user.getId());
         update.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userMapper.updateById(update);
+        StpUtil.logout(user.getId());
     }
 
     @Override
@@ -187,6 +194,7 @@ public class UserServiceImpl implements UserService {
         update.setId(user.getId());
         update.setAvatar(request.getAvatar());
         userMapper.updateById(update);
+        LoginUserContext.refreshCurrentAvatar(request.getAvatar());
     }
 
     private SysUser requireUser(Long id) {

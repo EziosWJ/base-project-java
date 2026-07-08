@@ -7,6 +7,7 @@ import cn.ezios.baseapi.common.enums.ResponseCode;
 import cn.ezios.baseapi.common.exception.BusinessException;
 import cn.ezios.baseapi.common.util.IpUtil;
 import cn.ezios.baseapi.modules.auth.dto.LoginRequest;
+import cn.ezios.baseapi.modules.auth.session.LoginUserContext;
 import cn.ezios.baseapi.modules.auth.service.AuthService;
 import cn.ezios.baseapi.modules.auth.vo.AuthDeptVO;
 import cn.ezios.baseapi.modules.auth.vo.AuthMenuVO;
@@ -85,9 +86,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         StpUtil.login(user.getId());
-        user.setLastLoginTime(LocalDateTime.now());
+        LocalDateTime loginTime = LocalDateTime.now();
+        user.setLastLoginTime(loginTime);
         user.setLastLoginIp(loginIp);
         userMapper.updateById(user);
+        LoginUserContext.setCurrentUser(user, loginIp, loginTime);
         recordLoginLog(user.getUsername(), LOGIN_SUCCESS, loginIp, servletRequest, "登录成功");
 
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
