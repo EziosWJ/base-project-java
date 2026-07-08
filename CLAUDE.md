@@ -5,7 +5,7 @@
 ## 项目结构
 
 ```
-soldier_ask/
+project/
 ├── react-admin/   # 前端项目（React），直接在此开发
 ├── base-api/      # 后端项目（Java），直接在此开发
 ```
@@ -86,4 +86,22 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ---
 
+---
+
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+---
+
+## Agent skills
+
+### Issue tracker
+
+工作项存放在本仓库的 GitHub Issues，skills 通过 `gh` CLI 读写。详见 `docs/agents/issue-tracker.md`。
+
+### Triage labels
+
+triage 流转使用 5 个默认标签（needs-triage / needs-info / ready-for-agent / ready-for-human / wontfix）。详见 `docs/agents/triage-labels.md`。
+
+### Domain docs
+
+单上下文：根目录 `CONTEXT.md` + `docs/adr/`。详见 `docs/agents/domain.md`。
